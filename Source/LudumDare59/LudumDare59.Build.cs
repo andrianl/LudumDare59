@@ -1,5 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+using System.IO;
 using UnrealBuildTool;
 
 public class LudumDare59 : ModuleRules
@@ -7,8 +8,11 @@ public class LudumDare59 : ModuleRules
 	public LudumDare59(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
-	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
+
+        PublicIncludePaths.Add(Path.Combine(ModuleDirectory, "TP_FirstPerson"));
+
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "StateTreeModule",
+            "GameplayStateTreeModule", });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
