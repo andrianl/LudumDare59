@@ -9,12 +9,13 @@ public class LudumDare59 : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-        PublicIncludePaths.Add(Path.Combine(ModuleDirectory, "TP_FirstPerson"));
-
         PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "StateTreeModule",
-            "GameplayStateTreeModule", });
+            "GameplayStateTreeModule","AIModule",        
+            "GameplayTasks",   
+            "NavigationSystem" });
 
-		PrivateDependencyModuleNames.AddRange(new string[] {  });
+
+        PrivateDependencyModuleNames.AddRange(new string[] {  });
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
