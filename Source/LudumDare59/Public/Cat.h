@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/AudioComponent.h"
-#include "Components/SphereComponent.h" // Додаємо цей інклуд
+#include "Components/SphereComponent.h"
 #include "Cat.generated.h"
 
 DECLARE_LOG_CATEGORY_EXTERN(LogCat, Log, All);
@@ -18,8 +18,23 @@ class LUDUMDARE59_API ACat : public AActor
 public:    
     ACat();
 
+    UFUNCTION(BlueprintCallable, Category = "Cat Interaction")
+    void UpdatePickupProgress(float Progress);
+
+    UFUNCTION(BlueprintCallable, Category = "Cat Interaction")
+    void CompletePickup();
+
+    UFUNCTION(BlueprintCallable, Category = "Cat Interaction")
+    void CancelPickup();
+
     UFUNCTION(BlueprintCallable, Category = "Cat Logic")
     void SetScared(bool bNewScared);
+
+    UFUNCTION(BlueprintImplementableEvent, Category = "Cat Interaction")
+    void OnCatPickedUp();
+
+    UFUNCTION(BlueprintImplementableEvent, Category = "Cat Interaction")
+    void OnPickupProgressUpdate(float Progress);
 
 protected:
     virtual void BeginPlay() override;

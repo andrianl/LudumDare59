@@ -17,7 +17,7 @@ void ABoxSpawner::BeginPlay()
 {
     Super::BeginPlay();
 
-    if (IsValid(ActorToSpawn))
+    if (SpawnType == ESpawnType::Normal && IsValid(ActorToSpawn))
     {
         SpawnActors();
     }
