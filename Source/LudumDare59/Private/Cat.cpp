@@ -1,8 +1,10 @@
+
+
 #include "Cat.h"
 #include "TimerManager.h"
 #include "Sound/SoundAttenuation.h"
 
-// Визначаємо категорію
+
 DEFINE_LOG_CATEGORY(LogCat);
 
 ACat::ACat()
@@ -10,12 +12,50 @@ ACat::ACat()
     CatMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CatMesh"));
     RootComponent = CatMesh;
 
+    PresenceSphere = CreateDefaultSubobject<USphereComponent>(TEXT("PresenceSphere"));
+    PresenceSphere->SetupAttachment(RootComponent);
+    PresenceSphere->SetSphereRadius(200.0f);
+
     AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("MeowAudioSource"));
     AudioComponent->SetupAttachment(RootComponent);
-
     AudioComponent->bAutoActivate = false;
 
     PrimaryActorTick.bCanEverTick = false;
+}
+
+void ACat::BeginPlay()
+{
+    Super::BeginPlay();
+
+    if (PresenceSphere)
+    {
+        PresenceSphere->OnComponentBeginOverlap.AddDynamic(this, &ACat::OnOverlapBegin);
+        PresenceSphere->OnComponentEndOverlap.AddDynamic(this, &ACat::OnOverlapEnd);
+    }
+
+    if (IsValid(MeowAttenuation))
+    {
+        AudioComponent->AttenuationSettings = MeowAttenuation;
+    }
+
+    float InitialDelay = FMath::FRandRange(MinMeowDelay, MaxMeowDelay);
+    GetWorldTimerManager().SetTimer(MeowTimerHandle, this, &ACat::PlayMeow, InitialDelay, false);
+}
+
+void ACat::UpdatePickupProgress(float Progress)
+{
+    OnPickupProgressUpdate(Progress);
+}
+
+void ACat::CompletePickup()
+{
+    UE_LOG(LogCat, Warning, TEXT("CAT PICKED UP VIA ENHANCED INPUT!"));
+    OnCatPickedUp();
+}
+
+void ACat::CancelPickup()
+{
+    OnPickupProgressUpdate(0.0f);
 }
 
 void ACat::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
@@ -53,7 +93,6 @@ void ACat::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
     }
 }
 
-
 void ACat::SetScared(bool bNewScared)
 {
     bIsScared = bNewScared;
@@ -62,18 +101,7 @@ void ACat::SetScared(bool bNewScared)
     PlayMeow();
 }
 
-void ACat::BeginPlay()
-{
-    Super::BeginPlay();
 
-    if (IsValid(MeowAttenuation))
-    {
-        AudioComponent->AttenuationSettings = MeowAttenuation;
-    }
-
-    float InitialDelay = FMath::FRandRange(MinMeowDelay, MaxMeowDelay);
-    GetWorldTimerManager().SetTimer(MeowTimerHandle, this, &ACat::PlayMeow, InitialDelay, false);
-}
 
 void ACat::PlayMeow()
 {

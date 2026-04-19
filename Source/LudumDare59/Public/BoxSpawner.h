@@ -7,6 +7,13 @@
 #include "Components/BoxComponent.h"
 #include "BoxSpawner.generated.h"
 
+UENUM(BlueprintType)
+enum class ESpawnType : uint8
+{
+    Normal UMETA(DisplayName = "Normal (Always Spawns)"),
+    Unique UMETA(DisplayName = "Unique (Only one from group)")
+};
+
 UCLASS()
 class LUDUMDARE59_API ABoxSpawner : public AActor
 {
@@ -15,14 +22,20 @@ class LUDUMDARE59_API ABoxSpawner : public AActor
 public:    
     ABoxSpawner();
 
+    void SpawnActors();
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
+    TSubclassOf<AActor> ActorToSpawn;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
+    ESpawnType SpawnType = ESpawnType::Normal;
+
 protected:
     virtual void BeginPlay() override;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Spawning")
     UBoxComponent* SpawnArea;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
-    TSubclassOf<AActor> ActorToSpawn;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
     int32 AmountToSpawn = 5;
@@ -30,7 +43,6 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
     ESpawnActorCollisionHandlingMethod CollisionHandle = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-    void SpawnActors();
-
+private:
     FVector GetRandomPointInBox() const;
 };

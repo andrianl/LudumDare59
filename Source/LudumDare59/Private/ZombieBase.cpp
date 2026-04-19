@@ -7,15 +7,61 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
+#include <Kismet/KismetSystemLibrary.h>
+#include <Kismet/GameplayStatics.h>
 
 
 int AZombieBase::MeleeAttack_Implementation()
 {
-	if(AttackMontage)
-	{
-		PlayAnimMontage(AttackMontage);
-	}
-	return 0;
+    if (AttackMontage)
+    {
+        PlayAnimMontage(AttackMontage);
+        // Порада: PerformMeleeHit() краще викликати через AnimNotify в монтежі, 
+        // щоб удар ставався саме тоді, коли зомбі махає рукою.
+        // Але для тесту можна викликати прямо тут:
+        //PerformMeleeHit();
+    }
+    return 0;
+}
+
+void AZombieBase::PerformMeleeHit()
+{
+    FVector Start = GetActorLocation() + GetActorForwardVector() * 40.f;
+    FVector End = Start + GetActorForwardVector() * AttackRange;
+
+    FHitResult HitResult;
+    TArray<AActor*> ActorsToIgnore;
+    ActorsToIgnore.Add(this);
+
+    bool bHit = UKismetSystemLibrary::SphereTraceSingle(
+        this,
+        Start,
+        End,
+        AttackRadius,
+        UEngineTypes::ConvertToTraceType(ECC_Pawn),
+        false,
+        ActorsToIgnore,
+        EDrawDebugTrace::ForDuration,
+        HitResult,
+        true
+    );
+
+    if (bHit)
+    {
+        AActor* HitActor = HitResult.GetActor();
+        if (HitActor)
+        {
+            UGameplayStatics::ApplyDamage(
+                HitActor,
+                AttackDamage,
+                GetController(),
+                this,
+                UDamageType::StaticClass()
+            );
+
+            UE_LOG(LogTemp, Log, TEXT("Zombie hit: %s for %f damage"), *HitActor->GetName(), AttackDamage);
+        }
+    }
 }
 
 void AZombieBase::SetUpStimuliSource()

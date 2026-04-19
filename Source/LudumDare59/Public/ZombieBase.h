@@ -36,6 +36,20 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	protected:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zombie Attack")
+    float AttackDamage = 20.f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zombie Attack")
+    float AttackRange = 100.f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zombie Attack")
+    float AttackRadius = 40.f;
+
+    UFUNCTION(BlueprintCallable, Category = "Zombie Attack")
+    void PerformMeleeHit();
+
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
