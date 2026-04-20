@@ -21,11 +21,15 @@ ACat::ACat()
     AudioComponent->bAutoActivate = false;
 
     PrimaryActorTick.bCanEverTick = false;
+
+    bIsScared = true;
 }
 
 void ACat::BeginPlay()
 {
     Super::BeginPlay();
+
+	bIsScared = true; // some bugs cause the cat to start happy, so we enforce scared state at begin play
 
     if (PresenceSphere)
     {

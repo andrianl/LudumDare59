@@ -64,7 +64,7 @@ protected:
     float MaxMeowDelay = 10.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cat Settings")
-    bool bIsScared = true;
+    bool bIsScared;
 
     UFUNCTION()
     void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, 
