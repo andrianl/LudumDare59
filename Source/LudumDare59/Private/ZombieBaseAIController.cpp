@@ -10,6 +10,7 @@
 #include "Perception/AISenseConfig_Hearing.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "ZombieBase.h"
+#include <PlayerCharacter.h>
 
 void AZombieBaseAIController::Tick(float DeltaTime)
 {
@@ -56,6 +57,13 @@ void AZombieBaseAIController::SetupPerceptionSystem()
 
 void AZombieBaseAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
 {
+	APlayerCharacter* Player = Cast<APlayerCharacter>(Actor);
+
+	if (!IsValid(Player))
+	{
+		return;
+	}
+
 	if (Stimulus.IsValid())
 	{
 		if (Stimulus.Type.Name == SightConfig->GetSenseID().Name)
