@@ -2,7 +2,7 @@
 
 
 #include "AI/Services/BTService_ISPlayerInMeeleRange.h"
-
+#include "PlayerCharacter.h"
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
@@ -19,7 +19,7 @@ void UBTService_ISPlayerInMeeleRange::OnBecomeRelevant(UBehaviorTreeComponent& O
 	Super::OnBecomeRelevant(OwnerComp, NodeMemory);
 	const AAIController* Controller = Cast<AAIController>(OwnerComp.GetAIOwner());
 	NpcPawn = Cast<APawn>(Controller->GetPawn());
-	TargetCharacter = Cast<AActor>(
+	TargetCharacter = Cast<APlayerCharacter>(
 		OwnerComp.GetBlackboardComponent()->GetValueAsObject("TargetActor"));
 }
 
